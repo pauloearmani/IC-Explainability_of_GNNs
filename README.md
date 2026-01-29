@@ -4,7 +4,16 @@
 O presente projeto tem por objetivo explicar modelos de aprendizado profundo (deep learning) para predição de séries temporais, utilizando Redes Neurais de Grafos (Graph Neural Networks - GNNs). Será utilizado como estudo de caso um modelo de predição de séries temporais de COVID-19 no Brasil, composto de Redes Convolucionais de Grafo (GCN) em conjunto com Memória de curto e longo prazo (LSTM), tendo como entradas séries temporais de casos de COVID-19 nas cidades brasileiras e a rede de mobilidade humana entre elas. O principal objetivo é utilizar técnicas de explicabilidade como GNNExplainer, SHAP e LIME para compreender quais cidades vizinhas mais influenciam na predição dos casos de cada cidade.
 
 ## Status do Projeto
-- Fase 1 Concluída: Framework de análise e avaliação de explicabilidade (GNNExplainer) finalizado em dataset de benchmark (Cora).
+- **Fase 1 (Concluída):** Framework de análise e avaliação de explicabilidade (GNNExplainer) finalizado em dataset de benchmark (Cora).
+- **Fase 2 (Em Andamento):** Implementação do pipeline de validação com dados sintéticos (Ground-Truth) para comparar GNNExplainer e outros métodos em cenários controlados.
+
+  ## Estrutura do Pipeline (Metodologia)
+[cite_start]O projeto segue a arquitetura proposta pelo framework GraphXAI[cite: 104], dividido em quatro módulos principais:
+
+1.  **Generator (Gerador):** Cria grafos sintéticos e injeta estruturas (motifs) que definem a classe do nó. [cite_start]Gera a máscara de *Ground-Truth* ($M^g$)[cite: 10, 528].
+2.  [cite_start]**Predictor (Preditor):** Treina uma GNN (GCN/GIN) para classificar os nós baseados nos padrões injetados[cite: 60].
+3.  [cite_start]**Explainer (Explicador):** Gera a máscara de importância ($M^p$) usando métodos como GNNExplainer[cite: 55].
+4.  [cite_start]**Evaluator (Avaliador):** Compara $M^p$ com $M^g$ utilizando métricas de acurácia de explicação (Graph Explanation Accuracy - GEA) e Fidelidade[cite: 70, 132].
 
 ## Instalação
 1. Clone o repositório: `git clone https://github.com/seu-usuario/seu-repositorio.git`
