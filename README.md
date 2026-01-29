@@ -8,12 +8,12 @@ O presente projeto tem por objetivo explicar modelos de aprendizado profundo (de
 - **Fase 2 (Em Andamento):** Implementação do pipeline de validação com dados sintéticos (Ground-Truth) para comparar GNNExplainer e outros métodos em cenários controlados.
 
   ## Estrutura do Pipeline (Metodologia)
-[cite_start]O projeto segue a arquitetura proposta pelo framework GraphXAI[cite: 104], dividido em quatro módulos principais:
+O projeto segue a arquitetura proposta pelo framework GraphXAI, dividido em quatro módulos principais:
 
-1.  **Generator (Gerador):** Cria grafos sintéticos e injeta estruturas (motifs) que definem a classe do nó. [cite_start]Gera a máscara de *Ground-Truth* ($M^g$)[cite: 10, 528].
-2.  [cite_start]**Predictor (Preditor):** Treina uma GNN (GCN/GIN) para classificar os nós baseados nos padrões injetados[cite: 60].
-3.  [cite_start]**Explainer (Explicador):** Gera a máscara de importância ($M^p$) usando métodos como GNNExplainer[cite: 55].
-4.  [cite_start]**Evaluator (Avaliador):** Compara $M^p$ com $M^g$ utilizando métricas de acurácia de explicação (Graph Explanation Accuracy - GEA) e Fidelidade[cite: 70, 132].
+1.  **Generator (Gerador):** Cria grafos sintéticos e injeta estruturas (motifs) que definem a classe do nó. Gera a máscara de **Ground-Truth**.
+2.  **Predictor (Preditor):** Treina uma GNN (GCN/GIN) para classificar os nós baseados nos padrões injetados.
+3.  **Explainer (Explicador):** Gera a máscara de importância ($M^p$) usando métodos como GNNExplainer.
+4.  **Evaluator (Avaliador):** Compara $M^p$ com $M^g$ utilizando métricas de acurácia de explicação (Graph Explanation Accuracy - GEA) e Fidelidade.
 
 ## Instalação
 1. Clone o repositório: `git clone https://github.com/seu-usuario/seu-repositorio.git`
