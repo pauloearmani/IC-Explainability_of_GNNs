@@ -44,9 +44,10 @@ A Fidelity- não-nula nos sintéticos (vs. 0.0 no Cora) confirma que o comportam
 
 ```
 ├── notebooks/
-│   ├── 01-treinamento_gcn_cora.ipynb       # Treino da GCN no Cora
-│   ├── 02-teste_explicador.ipynb           # GNNExplainer no Cora + métricas
-│   └── 03-sintetico_gnnexplainer.ipynb     # Pipeline completo com grafos sintéticos
+│   ├── 01_treinamento_gcn_cora.ipynb      # Fase 1 — treino da GCN no Cora
+│   ├── 02_teste_explicador_cora.ipynb     # Fase 1 — GNNExplainer no Cora + métricas
+│   ├── 03_pipeline_sintetico.ipynb        # Fase 2 — pipeline completo com grafos sintéticos
+│   └── 04_experimentos_finais.ipynb       # Fase 2 — resultados e análise comparativa
 │
 ├── src/
 │   ├── generators.py   # Gerador de grafos sintéticos com motifs (house, star, cycle)
@@ -56,8 +57,9 @@ A Fidelity- não-nula nos sintéticos (vs. 0.0 no Cora) confirma que o comportam
 │   ├── metrics.py      # Funções auxiliares de métricas (Sparsity, Fidelity log-prob)
 │   └── utils.py        # Treinamento, split estratificado, visualização de grafos
 │
-├── results/            # Saídas dos experimentos (plots, métricas, modelos salvos)
-├── data/               # Dados externos (não versionados se grandes)
+├── results/
+│   └── models/
+│       └── gcn_cora.pth   # Pesos da GCN treinada no Cora
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -83,13 +85,14 @@ pip install -r requirements.txt
 
 ### Pipeline sintético completo (Fase 2)
 ```bash
-jupyter notebook notebooks/03-sintetico_gnnexplainer.ipynb
+jupyter notebook notebooks/03_pipeline_sintetico.ipynb
+jupyter notebook notebooks/04_experimentos_finais.ipynb
 ```
 
 ### Reproduzir Fase 1 (Cora)
 ```bash
-jupyter notebook notebooks/01-treinamento_gcn_cora.ipynb
-jupyter notebook notebooks/02-teste_explicador.ipynb
+jupyter notebook notebooks/01_treinamento_gcn_cora.ipynb
+jupyter notebook notebooks/02_teste_explicador_cora.ipynb
 ```
 
 ### Usar os módulos diretamente
