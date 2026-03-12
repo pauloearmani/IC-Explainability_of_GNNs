@@ -212,4 +212,4 @@ __marimo__/
 # Ignorar arquivos de cache do Python
 __pycache__/
 
-.vscode/notebooks/data/
+notebooks/data/
