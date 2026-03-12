@@ -1,56 +1,137 @@
 # Explicabilidade de GNNs para Predição de Séries Temporais
 
-## Resumo (Abstract)
-O presente projeto tem por objetivo explicar modelos de aprendizado profundo (deep learning) para predição de séries temporais, utilizando Redes Neurais de Grafos (Graph Neural Networks - GNNs). Será utilizado como estudo de caso um modelo de predição de séries temporais de COVID-19 no Brasil, composto de Redes Convolucionais de Grafo (GCN) em conjunto com Memória de curto e longo prazo (LSTM), tendo como entradas séries temporais de casos de COVID-19 nas cidades brasileiras e a rede de mobilidade humana entre elas. O principal objetivo é utilizar técnicas de explicabilidade como GNNExplainer, SHAP e LIME para compreender quais cidades vizinhas mais influenciam na predição dos casos de cada cidade.
+## Resumo
 
-## Status do Projeto
-- **Fase 1 (Concluída):** Framework de análise e avaliação de explicabilidade (GNNExplainer) finalizado em dataset de benchmark (Cora).
-- **Fase 2 (Em Andamento):** Implementação do pipeline de validação com dados sintéticos (Ground-Truth) para comparar GNNExplainer e outros métodos em cenários controlados.
+Este projeto investiga mecanismos de explicabilidade de modelos de Redes Neurais de Grafos (GNNs), com foco no método GNNExplainer e na avaliação sistemática da qualidade das explicações geradas. O estudo de caso final é um modelo GCN-LSTM de predição de séries temporais de COVID-19 em municípios brasileiros, utilizando o grafo de mobilidade humana como estrutura relacional.
 
-  ## Estrutura do Pipeline (Metodologia)
-O projeto segue a arquitetura proposta pelo framework GraphXAI, dividido em quatro módulos principais:
+O projeto é desenvolvido como Iniciação Científica na Universidade Federal de Ouro Preto (UFOP).
 
-1.  **Generator (Gerador):** Cria grafos sintéticos e injeta estruturas (motifs) que definem a classe do nó. Gera a máscara de **Ground-Truth**.
-2.  **Predictor (Preditor):** Treina uma GNN (GCN/GIN) para classificar os nós baseados nos padrões injetados.
-3.  **Explainer (Explicador):** Gera a máscara de importância ($M^p$) usando métodos como GNNExplainer.
-4.  **Evaluator (Avaliador):** Compara $M^p$ com $M^g$ utilizando métricas de acurácia de explicação (Graph Explanation Accuracy - GEA) e Fidelidade.
+---
 
-## Instalação
-1. Clone o repositório: `git clone https://github.com/seu-usuario/seu-repositorio.git`
-2. Navegue até a pasta do projeto: `cd seu-repositorio`
-3. Crie um ambiente virtual: `python -m venv venv`
-4. Ative o ambiente: `source .venv/bin/activate` (ou `.venv\Scripts\activate` no Windows)
-5. Instale as dependências: `pip install -r requirements.txt`
+## Status
 
-## Como Usar
-O projeto é dividido em notebooks Jupyter para facilitar a experimentação e a visualização dos resultados.
-1. Treinamento do Modelo Base:
-- Para treinar o modelo GCN no dataset Cora e salvar o arquivo de pesos (`gcn_cora.pth`), execute todas as células do notebook: `notebooks/01-treinamento_gcn_cora.ipynb`.
-2. Análise de Explicabilidade:
-- Para carregar o modelo treinado, gerar explicações para um nó de teste usando GNNExplainer, visualizar o resultado e calcular as métricas de avaliação (Fidelidade e Concisão), execute o notebook: `notebooks/02-teste_explicador.ipynb`.
+| Fase | Descrição | Status |
+|------|-----------|--------|
+| 1 | GNNExplainer no dataset Cora (benchmark real) | ✅ Concluída |
+| 2 | Avaliação com grafos sintéticos e ground-truth conhecido | ✅ Concluída |
+| 3 | Métodos alternativos (SHAP, SubgraphX) no benchmark sintético | 🔄 Planejada |
+| 4 | Extensão ao modelo GCN-LSTM (COVID-19) | 🔄 Planejada |
+
+---
+
+## Resultados Principais
+
+### Fase 1 — Dataset Cora
+- GCN 2 camadas treinada no Cora para classificação de nós (7 classes)
+- GNNExplainer avaliado em nós de teste representativos
+- **Fidelity+ = 1.0, Fidelity- = 0.0** — explicações suficientes mas não necessárias
+- Interpretação ambígua: ausência de ground-truth estrutural impede distinguir limitação do explicador de complexidade do dataset
+
+### Fase 2 — Grafos Sintéticos com Ground-Truth
+
+Gerador próprio com motifs plantados (house 5 nós, star 6 nós), grafo base Barabási-Albert.
+
+| Motif | F1 Modelo | AUC-ROC Expl. | Jaccard | Recall | Fidelity+ | Fidelity- | Unfaithfulness |
+|-------|-----------|----------------|---------|--------|-----------|-----------|----------------|
+| House | 0.9744 | 0.7597 | 0.7597 | 0.8167 | 0.9436 | 0.3874 | 0.0919 |
+| Star  | 0.9362 | 0.7082 | 0.7082 | 0.8250 | 0.9914 | 0.4250 | 0.1229 |
+
+A Fidelity- não-nula nos sintéticos (vs. 0.0 no Cora) confirma que o comportamento observado na Fase 1 é parcialmente atribuível à complexidade estrutural do dataset real — e não apenas a uma limitação do explicador.
+
+---
 
 ## Estrutura do Repositório
-O projeto segue uma estrutura modular para separar responsabilidades e facilitar a manutenção e expansão do código.
+
 ```
-├── notebooks/          # Contém os notebooks Jupyter para experimentação, treinamento e análise.
-│   ├── 01-treinamento_gcn_cora.ipynb
-│   └── 02-teste_explicador.ipynb
+├── notebooks/
+│   ├── 01-treinamento_gcn_cora.ipynb       # Treino da GCN no Cora
+│   ├── 02-teste_explicador.ipynb           # GNNExplainer no Cora + métricas
+│   └── 03-sintetico_gnnexplainer.ipynb     # Pipeline completo com grafos sintéticos
 │
-├── src/                # Código fonte principal, organizado em módulos.
-│   ├── models.py       # Definição das arquiteturas das redes neurais (ex: GCN).
-│   ├── explainers.py   # Implementação dos wrappers dos métodos de explicação (ex: GNNExplainer).
-│   └── metrics.py      # Funções para calcular as métricas de avaliação (Fidelidade, Concisão).
+├── src/
+│   ├── generators.py   # Gerador de grafos sintéticos com motifs (house, star, cycle)
+│   ├── models.py       # Arquiteturas GCN (2 e 3 camadas)
+│   ├── explainers.py   # Wrapper do GNNExplainer com correção de target
+│   ├── evaluator.py    # Métricas: AUC-ROC, Jaccard, Recall, Unfaithfulness, Fidelity
+│   ├── metrics.py      # Funções auxiliares de métricas (Sparsity, Fidelity log-prob)
+│   └── utils.py        # Treinamento, split estratificado, visualização de grafos
 │
-├── gcn_cora.pth        # Arquivo de pesos do modelo GCN treinado no dataset Cora.
-├── requirements.txt    # Lista de dependências Python para o projeto.
-└── README.md           # Este arquivo de documentação.
+├── results/            # Saídas dos experimentos (plots, métricas, modelos salvos)
+├── data/               # Dados externos (não versionados se grandes)
+├── .gitignore
+├── requirements.txt
+└── README.md
 ```
 
-## Referências e Citações
-- [GNNExplainer: Generating Explanations for Graph Neural Networks](https://arxiv.org/abs/1903.03894)
-- [A Survey on Graph Neural Networks](https://arxiv.org/abs/1901.00596)
+---
 
-## Autor e Contato
-- **Nome:** Paulo Eduardo Costalonga Armani
-- **LinkedIn:** [www.linkedin.com/in/pauloeduardoarmani]
-- **GitHub:** [https://github.com/pauloearmani]
+## Instalação
+
+```bash
+git clone https://github.com/pauloearmani/IC-Explainability_of_GNNs.git
+cd IC-Explainability_of_GNNs
+python -m venv venv
+source venv/bin/activate          # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+> **Nota:** Este projeto requer PyTorch e PyTorch Geometric. Certifique-se de instalar a versão compatível com seu CUDA. Consulte [pytorch-geometric.readthedocs.io](https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html) para instruções específicas.
+
+---
+
+## Como Usar
+
+### Pipeline sintético completo (Fase 2)
+```bash
+jupyter notebook notebooks/03-sintetico_gnnexplainer.ipynb
+```
+
+### Reproduzir Fase 1 (Cora)
+```bash
+jupyter notebook notebooks/01-treinamento_gcn_cora.ipynb
+jupyter notebook notebooks/02-teste_explicador.ipynb
+```
+
+### Usar os módulos diretamente
+
+```python
+from src.generators import SyntheticGraphGenerator
+from src.models import GCNClassifier
+from src.evaluator import Evaluator
+
+# Gerar grafo com motif house
+gen = SyntheticGraphGenerator(num_nodes=300, num_houses=20, motif_type='house')
+data = gen.generate()
+
+# Treinar modelo
+model = GCNClassifier(num_features=10, num_classes=2, hidden_dim=64)
+```
+
+---
+
+## Metodologia
+
+O projeto segue uma sequência deliberada de experimentos, motivada pela literatura recente:
+
+1. **Avaliação em dado real (Cora):** revelou ambiguidade interpretativa causada pela ausência de ground-truth estrutural — Fidelity- = 0.0 não distingue limitação do explicador de complexidade do dataset.
+
+2. **Experimentos sintéticos controlados:** motivados por [Miró-Nicolau et al. (2025)](#referências), que demonstra que métricas de fidelidade podem ser não confiáveis em modelos não-lineares, e por [Agarwal et al. (2023)](#referências), que documenta degradação sistemática de explicadores ao passar de sintéticos para dados reais.
+
+3. **Extensão ao estudo de caso final (GCN-LSTM + COVID-19):** contexto sem ground-truth estrutural, onde as lições das fases anteriores serão diretamente aplicadas.
+
+---
+
+## Referências
+
+- Ying et al. **GNNExplainer: Generating Explanations for Graph Neural Networks.** NeurIPS, 2019. [arxiv](https://arxiv.org/abs/1903.03894)
+- Kipf & Welling. **Semi-Supervised Classification with Graph Convolutional Networks.** ICLR, 2017. [arxiv](https://arxiv.org/abs/1609.02907)
+- Agarwal et al. **Evaluating explainability for graph neural networks.** Scientific Data, v.10, p.144, 2023. [doi](https://doi.org/10.1038/s41597-023-01974-x)
+- Miró-Nicolau et al. **A comprehensive study on fidelity metrics for XAI.** Information Processing and Management, v.62, p.103900, 2025. [doi](https://doi.org/10.1016/j.ipm.2024.103900)
+
+---
+
+## Autor
+
+**Paulo Eduardo Costalonga Armani**  
+Iniciação Científica — UFOP  
+[linkedin.com/in/pauloeduardoarmani](https://linkedin.com/in/pauloeduardoarmani) · [github.com/pauloearmani](https://github.com/pauloearmani)
